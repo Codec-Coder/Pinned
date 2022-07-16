@@ -1,0 +1,79 @@
+package com.example.pinned;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.storage.StorageManager;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class MainActivity extends AppCompatActivity {
+
+    ImageView im ;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        im = findViewById(R.id.imageView);
+        String filename = "shubs.cache";
+        Context context = getApplicationContext();
+        try {
+            File.createTempFile(filename, null, context.getCacheDir());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        im.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getApplicationContext(),"Image lONG PRESSED.",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
+    public void imagePressed(View view) {
+        Toast.makeText(getApplicationContext(),"Image pressed",Toast.LENGTH_SHORT).show();
+
+    }
+    private void writeToFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+    private void readFile(){
+        FileInputStream is;
+        BufferedReader reader;
+        final File file = new File("/sdcard/text.txt");
+
+        if (file.exists()) {
+            try {
+                is = new FileInputStream(file);
+                reader = new BufferedReader(new InputStreamReader(is));
+                String line = reader.readLine();
+                while(line != null){
+                    Log.d("StackOverflow", line);
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
